@@ -11,7 +11,14 @@ if (Meteor.isClient) {
     }
   });
 
-  Meteor.http.call( "GET" ,"http://app.smartfile.com/api/2/ping",
+  pingPong = function(data) {
+    console.log(data);
+  }
+
+  Meteor.http.call( "GET" ,"https://app.smartfile.com/api/2/ping",
+    {params: {format:"json"},
+     headers: "Acces-Control-Allow-Origin: *", 
+     timeout: 10000 },
     function(error, result) {
       console.log(error);
       console.log(result);
