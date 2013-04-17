@@ -10,6 +10,13 @@ if (Meteor.isClient) {
         console.log("You pressed the button");
     }
   });
+
+  Meteor.http.call( "GET" ,"http://app.smartfile.com/api/2/ping",
+    function(error, result) {
+      console.log(error);
+      console.log(result);
+  });
+
 }
 
 if (Meteor.isServer) {
