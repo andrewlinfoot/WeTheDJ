@@ -47,13 +47,23 @@ h1, h2, h3, h4, h5, h6 {
 article, aside, details, figcaption, figure, footer, header, hgroup, nav, section {
     display: block;
 }
-img {
+
+.deco img{
     border: 0 none;
     height: 350px;
     max-width: 100%;
 	padding-left: 120px;
     vertical-align: middle;
 }
+
+img {
+    border: 0 none;
+    height: auto;
+    max-width: 100%;
+    vertical-align: middle;
+}
+
+
 ::-moz-selection {
 background:#EE6557;
 color:white;
@@ -783,25 +793,14 @@ transition: all 0.3s ease-out;
    text-decoration: none;
    font-family: 'Open Sans', sans-serif;
 }
-.sign-facebook{
-    background: #35528A;
-    font-family: 'Open Sans', sans-serif;  
-}
-.sign-facebook:hover{
-    background: #2c4371;  
-}
+
 .sign-twitter{
-    background: #00ADEF;    
+    background: #c6d434;    
 }
 .sign-twitter:hover{
-    background: #0094cd;   
+    background: #3c5597;   
 }
-.sign-google{
-    background: #CE1B21;  
-}
-.sign-google:hover{
-    background: #b0171c; 
-}
+
 .modern:active {
 box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3) inset;
 -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3) inset;
