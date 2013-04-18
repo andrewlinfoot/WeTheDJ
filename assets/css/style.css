@@ -1,5 +1,5 @@
 /*
-Adeyo
+Adeyo/Linfoot
 */
 
 /* ==== #Import Section ==== */
@@ -261,20 +261,7 @@ i:hover {
     color: #FFF;
 }
 
-/* ===== #danger box ===== */
 
-.alert-danger, .alert-error {
-    background-color: #F1F0F2 ;
-    border-color: #E4E4E4;
-    box-shadow: none;
-    color: #5D5D5D;
-    border-radius: 2px;
-    margin-bottom: 20px;
-    text-shadow: none;
-}
-.alert-danger h4, .alert-error h4 {
-    color: #5D5D5D;
-}
 
 
 
@@ -1102,77 +1089,14 @@ hr {
 
 /* ===== #footer ===== */
 
-.pre-footer{
-    background-color: #111111;
-    border-top: none;
-    padding-bottom: 20px;
-    color: #555555;
-}
-.pre-footer .lines-title {
-}
 
-.pre-footer h3{
-    color: #555555;
-    font-weight: 100;
-}
 .post-footer{
     border-top: 1px solid #191919;
     background-color: #111111;
     padding: 20px 0;
     color: #716B78;
 }
-.pre-footer .contact-footer {
-    list-style: none outside none;
-    margin-left: 0;
-}
-.contact-footer i{
-    color:#555555;
-}
-.footer-subscribe {
-    color: #555555;
-}
-#newsletter {
-    margin: 15px 0;
-}
-#newsletter input{
-    margin-right: 10px;
-}
-#newsletter button{
-    margin-top: -10px;
-}
-#coming {
-    margin: 15px 0;
-}
-#coming input{
-    margin-right: 10px;
-}
-#coming button{
-    margin-top: -10px;
-}
-#subscribe{
-    margin: 15px 0;
-}
-#subscribe button{
-   margin-top: -10px;  
-}
-#search button{
-    margin-top: -10px; 
-} 
-#search input{
-    margin-right: 10px; 
-} 
-.pre-footer #newsletter input[type="text"], .pre-footer #newsletter textarea {
-    background-color: #191919;
-    margin-top: 1px;
-    border: medium none;
-    font-size: 14px;
-    padding: 4px 20px;
-    font-family: 'Open Sans', sans-serif;
-}
-.pre-footer #newsletter input:focus[type="text"], .pre-footer #newsletter textarea:focus {
-    background-color: #EE6557;
-    color: #ffffff;
-}
+
 
 .btn-send {
   color: #ffffff;
