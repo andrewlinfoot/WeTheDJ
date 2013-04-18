@@ -30,22 +30,18 @@
 
 	{{#if currentUser}}
 
-		{{#if smartFileCredentials}}
-			{{>dashboard}}
-		{{else}}
-			{{>addAPIcredentials}}
-		{{/if}}
+		{{>renderDash}}
 
 	{{else}}
 
-		{{>renderPage}}
+		{{>renderHome}}
 
   {{/if}}
 
   {{>footer}}
 </body>
 
-<template name="renderPage">
+<template name="renderHome">
 		{{#if homePage}}
   		{{>home}}
   	{{/if}}
@@ -57,6 +53,14 @@
   	{{#if loginPage}}
   		{{>login}}
   	{{/if}}
+</template>
+
+<template name="renderDash">
+		{{#if smartFileCredentials}}
+			{{>dashboard}}
+		{{else}}
+			{{>addAPIcredentials}}
+		{{/if}}
 </template>
 
 <template name="header">
@@ -261,8 +265,6 @@
 						<div class="span12">							
 							<div class="plan-sign white-content">
 								<h2>Welcome, James.</h2>	
-								
-								
 							</div>						
 						</div>	
 					</div>
@@ -328,5 +330,20 @@
 </template>
 
 <template name="addAPIcredentials">
-	add apicredentials
+<!-- start: sign-pattern -->
+<div class="section-sign sign-pattern">
+	<div class="section-wrapper">
+		<div class="container">
+			<div class="row">
+				<div class="span6 offset3">
+					<form id="open-id-c">
+						<input id="apiKey" type="text" class="open-email" placeholder="Key">
+			      <input id="apiPassword" type="password" class="open-password" placeholder="Password">
+			      <input id="submitAPIcredentials" type="submit" class="btn btn-send btn-sign " value="Add Credentials">
+					</form>	
+				</div>	
+			</div>
+		</div>	
+	</div>			
+ </div><!-- end: sign -->
 </template>

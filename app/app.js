@@ -1,10 +1,14 @@
 if (Meteor.isClient) {
   Songs = new Meteor.Collection("songs");
 
+  /* ==============================================================
+    Home Page Code 
+    Starts Here
+  =============================================================== */
   Session.setDefault('currentPage', 'homePage');
 
   //Page Routing 
-  Template.renderPage.helpers({
+  Template.renderHome.helpers({
     homePage: function() {
       if (Session.equals('currentPage', 'homePage')) {
         return true;
@@ -116,10 +120,10 @@ if (Meteor.isClient) {
       } else {
         alert("please enter all of the required fields");
       }
-
     }
   });
 
+  //REGEX check for valid email format
   var isValidEmail = function(email) {
     var pattern = new RegExp(/^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i);
     return pattern.test(email);
@@ -135,10 +139,45 @@ if (Meteor.isClient) {
     }
   });
 
-  Template.smartFileCredentials = function() {
-    return true;
+  /* ==============================================================
+    Dashboard Code 
+    Starts Here
+  =============================================================== */
+  Template.renderDash.smartFileCredentials = function() {
+    Meteor.call('checkSmartFileCred', function(error, result) {
+      if ( error || (result === false) ) {
+        console.log("Check failed");
+        return false;
+      } else if ( result === true ) {
+        console.log("the have the credentials");
+        return true;
+      }
+    });
   };
 
+  Template.addAPIcredentials.events({
+    'submit #submitAPIcredentials, click #submitAPIcredentials': function(e, t) {
+      e.preventDefault();
+
+      var apiKey = t.find('#apiKey').value
+        , apiPassword = t.find('#apiPassword').value;
+
+      if( apiKey && apiPassword ) {
+        Meteor.call('validateSmartFileCred', apiKey, apiPassword, function(error, result) {
+          console.log(error);
+          console.log(result);
+        });
+      } else {
+        alert("please enter both you key and password");
+      }
+
+    }
+  });
+
+  /* ==============================================================
+    Template UI Rendering Code 
+    Starts Here
+  =============================================================== */
   Template.home.rendered = function() {
       $(function() {
         var Page = (function() {
@@ -186,9 +225,13 @@ if (Meteor.isClient) {
         $('#shell img').plaxify()
         $.plax.enable()
       })
-
   }
 }
+
+/* ==============================================================
+  Server Code 
+  Starts Here
+=============================================================== */
 
 if (Meteor.isServer) {
   Meteor.startup(function () {
@@ -249,6 +292,43 @@ if (Meteor.isServer) {
           content = JSON.parse(results.content);
           Meteor.call("insertSong", content.url);
       });
+    },
+    checkSmartFileCred: function() {
+      //var userRecord = Meteor.user();
+      console.log(Meteor.user());
+      if( Meteor.user().services.smartFile ){
+        console.log("got dem credits");
+        return true;
+      } else if ( !Meteor.user().services.smartFile ) {
+        console.log("no soup for you");
+        return false;
+      }
+    },
+    //validates smartFile credentials and if valid, adds them to the users account
+    validateSmartFileCred: function(apiKey, apiPassword) {
+      auth = apiKey + ":" + apiPassword;
+      //2fm70a9TvdcItdhsQmwicn8THvnn61:mQnzKCvvAsILQDGmj20y6W1QSdNEkb
+      var results = Meteor.http.get("https://app.smartfile.com/api/2/whoami/", {auth: auth});
+      if ( results.error === null) {
+        //legit creds
+        var userID = Meteor.userId();
+        Meteor.users.update(
+        {
+          _id: userID
+        },{
+          services: {
+            smartFile: {
+              apiKey: apiKey,
+              apiPassword: apiPassword
+            }
+          }
+        }, function(error) {
+          console.log(error);
+        });
+      } else {
+        //not so legit
+        return false;
+      }
     }
   });
 }
