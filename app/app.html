@@ -1,8 +1,33 @@
 <head>
-  <title>WeTheDJ</title>
+
+	<!-- start: Meta -->
+	<meta charset="utf-8">
+	<title>We The DJ - SmartFile Entry </title> 
+	<meta content="Responsive portofolio at Bootstrap" name="description">
+	<meta content="light, responsive, portofolio" name="keywords">
+	<!-- end: Meta -->
+	
+	<!-- start: Mobile Specific -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+	<!-- end: Mobile Specific -->
+
+	<!-- start: favicon -->
+	<link href="//s3.amazonaws.com/wrapbootstrap/live/imgs/favicon.ico" rel="shortcut icon">
+	<!-- end: favicon -->
+
+
+
+    <!--[if IE 9]>
+		<style>.img-mask .flipper {display: none;}</style>
+	<![endif]-->  
+    <!--[if IE 8]>
+		<style>.boxy{position:relative;width:150px;height:150px;}.flipper {overflow: hidden;}.subscribe input[type="text"], .subscribe textarea {width: 35%;}.plan-background {background-position: center;background-repeat: repeat-x;border:none;} .sign-background {background-position: center;background-repeat: repeat-x;border:none;}.countdown-background {background-position: center;background-repeat: repeat-x;border:none;}.page-title {background-position: center;background-repeat: repeat-x;border:none;}.img-mask .flipper {display: none;}</style>	
+	<![endif]-->
 </head>
 
 <body>
+	{{>header}}
+
 	{{#if currentUser}}
 
 		{{#if smartFileCredentials}}
@@ -16,6 +41,8 @@
 		{{>renderPage}}
 
   {{/if}}
+
+  {{>footer}}
 </body>
 
 <template name="renderPage">
@@ -32,25 +59,272 @@
   	{{/if}}
 </template>
 
+<template name="header">
+	<header id="header">
+		<!--start: navbar -->
+		<div class="navbar navbar-fixed-top">
+			<div class="navbar-inner">
+				<div class="container">
+					<a data-toggle="collapse" data-target=".nav-collapse" class="btn btn-navbar">
+						<span><i class="icon-reorder"></i></span>
+					</a>
+
+					<a id="_home" class="brand" href=""><span><i class="icon-stop"></i></span>WeTheDJ</a>
+
+					<div id="top-navigation" class="nav-collapse subnav-collapse collapse ">
+						<ul class="nav pull-right">
+							{{#if currentUser}}
+                <li class="top-account visible-desktop"><a id="_logout" class="top-sign-in" href="">Logout</a></li>
+							{{else}}
+								<li class="top-account visible-desktop"><a id="_signup" class="top-sign-up" href="">Sign UP</a></li>
+								<li class="top-account visible-desktop"><a id="_login" class="top-sign-in" href="">Login</a></li>
+							{{/if}}
+						</ul>
+					</div>	
+			
+				</div>
+			</div>
+		</div><!--end: navbar -->
+	</header>
+</template>
+
+<template name="footer">
+<!-- start: footer -->
+	<footer>
+		<div class="post-footer">
+			<div class="container">
+				<div class="row">
+						<div class="span6">
+							<div class="copyright">Copyright &copy; 2013 Andrew Linfoot, Laolu Adeyo</div>
+						</div>
+						
+				</div>
+			</div>
+		</div>
+	</footer><!-- end: footer -->
+</template>
+
 <template name="home">
-  <h1>Hello World!</h1>
-  <audio controls>
-  	<source src="{{greeting}}" type="audio/mpeg">
-		Your browser does not support the audio element.
-	</audio>
-  <input type="button" value="Click" />
+	<!-- start: slider -->
+	<div class="slider-wrapper slider-wrapper">
+
+	            <div id="slider" class="sl-slider-wrapper">
+
+					<div class="sl-slider">
+					
+						<div class="sl-slide bg-1" data-orientation="horizontal" >
+							<div class="sl-slide-inner">
+								<div class="deco"><img src="/images/home-slider/upload.png" alt=""></div>
+								<a href="features.html"><h2>Upload Your songs! </h2>	</a>						
+							</div>
+						</div>
+						
+						<div class="sl-slide bg-2" data-orientation="vertical">
+							<div class="sl-slide-inner">
+								<div class="deco"><img src="/images/home-slider/dj.png" alt="" ></div>
+								<a href="features.html"><h2>Share with everyone!</h2>	</a>	
+							</div>
+						</div>
+									
+					
+					</div><!-- /sl-slider -->
+					
+					<nav id="nav-arrows" class="nav-arrows">
+						<span class="nav-arrow-prev">Previous</span>
+						<span class="nav-arrow-next">Next</span>
+					</nav>
+
+					<nav id="nav-dots" class="nav-dots">
+						<span class="nav-dot-current"></span>
+						<span></span>
+						
+					</nav>
+
+				</div><!-- /slider-wrapper -->
+		
+
+	</div><!-- end: slider -->
+
+
+	<!-- start: section-features -->
+	<div class="section-features">
+		<div class="container">
+			<div class="row">
+				<div class="span4">
+					<div class="info-features">
+						<i class="icon-laptop"></i>
+						<h5>Upload Your Music</h5>
+						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempora praesentium qui aspernatur amet distinctio.</p>
+					</div>
+				</div>
+				<div class="span4">
+					<div class="info-features">
+						<i class="icon-gift"></i>
+						<h5>Share With People</h5>
+						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempora praesentium qui aspernatur amet distinctio. </p>
+					</div>
+				</div>
+				<div class="span4">
+					<div class="info-features">
+						<i class="icon-headphones"></i>
+						<h5>Enjoy Other Music</h5>
+						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempora praesentium qui aspernatur amet distinctio.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div><!-- end: section-features -->
 </template>
 
 <template name="signup">
-	signup
+	<!-- start: sign -->
+	<div class="section-sign">
+		<div class="section-wrapper">
+			<div class="container">
+				<div class="row">
+					<div class="span6 offset3">
+						<div class="separator">
+							<div class="">
+								<div class="lines">
+									<div>
+									<h2 class="lines-title">Create an account</h2>
+									</div>
+								</div>
+							</div>
+						</div>		
+					</div>	
+				</div>
+			</div>	
+			<div class="container">
+				<div class="row-fluid">
+					<div class="span2 offset4">
+						<form>
+							<input id="email" type="email"  placeholder="Email">
+				      <input id="password" type="password" placeholder="Password">
+				      <input id="confPassword" type="password" placeholder="Confirm password">
+				      <input type="submit" id="createAccount" class="btn-account btn btn-send" value="Create Account">		            
+						</form>	
+					</div>	
+				</div>
+			</div>	
+			<div class="container">
+				<div class="row">
+					<div class="span3 offset5 account create-account">
+	          <span>Already have an account?</span>
+	          <a id="_login" href="">Login</a>
+					</div>	
+				</div>
+			</div>
+		</div>			
+	 </div><!-- end: sign -->
 </template>
 
 <template name="login">
-	login
+	<!-- start: sign-pattern -->
+	<div class="section-sign sign-pattern">
+		<div class="section-wrapper">
+			<div class="container">
+				<div class="row">
+					<div class="span6 offset3">
+						<form id="open-id-c">
+							<input id="email" type="email" class="open-email" placeholder="Email">
+				      <input id="password" type="password" class="open-password" placeholder="Password">
+				      <input type="submit" id="loginUser" class="btn btn-send btn-sign" value="Sign In">
+						</form>	
+					</div>	
+				</div>
+			</div>	
+			<div class="container">
+				<div class="row">
+					<div class="span3 offset3 password">
+						<label class="checkbox"><input type="checkbox"> Stay signed in</label>
+						<a href="password.html">Forgot password?</a>
+					</div>
+					<div class="span3 offset1 account">
+	        <span>Don’t have yet?</span>
+	        <a id="_signup" href="" >Sign up</a>
+					</div>	
+				</div>
+			</div>
+		</div>			
+	 </div><!-- end: sign -->
 </template>
 
 <template name="dashboard">
-	dashboard
+<!-- start: plan pattern -->
+	<div class="section-plan">
+
+			<div class="plan-pattern">
+
+				<div class="container">
+					<div class="row">
+						<div class="span12">							
+							<div class="plan-sign white-content">
+								<h2>Welcome, James.</h2>	
+								
+								
+							</div>						
+						</div>	
+					</div>
+				</div>
+			</div>	
+			<!--Song Entry-->
+			<div class="pricing">
+				<div class="container">
+					<div class="row">
+						<div class="span3">
+							<div class="dark-content price-content">
+								<h3>Now Playing</h3> 
+								<hr>         
+								<h4>
+									<i class="icon-user"></i>N.W.A</li>  
+	                <strong><i class="icon-music"></i>Gangsta Gangsta</li></strong>
+	                <i class="icon-folder-close"></i>Straight Outta Compton</li>
+	                <span><a class="btn btn-color" href="#">Upvote</a></i></span>
+	                <small><i class="icon-thumbs-up"></i>1106</li></small>
+	              </h4>
+							</div>	
+	          </div>	
+	        </div>
+				</div>
+	            <!--End Song Entry-->
+	            <!--Song Entry-->
+	            <div class="pricing">
+				<div class="container">
+					<div class="row">
+					<div class="span3">
+							<div class="white-content price-content">         
+								<h4><i class="icon-user"></i>Macklemore & Ryan Lewis</li>  
+	                            	<strong><i class="icon-music"></i>Thrift Shop</li></strong>
+	                                <i class="icon-folder-close"></i>The Heist</li>
+	                                <span><a class="btn btn-color" href="#">Upvote</a></i></span>
+	                                <small><i class="icon-thumbs-up"></i>988</li></small>
+	                            </h4>
+								</div>	
+	            </div>	
+	          </div>
+				</div>
+	      <!--End Song Entry--> 
+	    <!--Song Entry-->
+	    <div class="pricing">
+				<div class="container">
+					<div class="row">
+	                       <div class="span3">
+							<div class="white-content price-content">         
+								<h4><i class="icon-user"></i>Swedish House Mafia</li>  
+	                            	<strong><i class="icon-music"></i>Save The World</li></strong>
+	                                <i class="icon-folder-close"></i>Until One</li>
+	                                <span><a class="btn btn-color" href="#">Upvote</a></i></span>
+	                                <small><i class="icon-thumbs-up"></i>771</li></small>
+	                            </h4>
+								</div>	
+	            </div>	
+	          </div>
+				</div>
+	      <!--End Song Entry-->      
+			</div>
+			</div>
+	<!-- end: plan background -->
 </template>
 
 <template name="addAPIcredentials">
