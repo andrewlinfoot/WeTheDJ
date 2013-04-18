@@ -15,8 +15,8 @@ if (Meteor.isClient) {
     console.log(data);
   }
 
-  Meteor.http.call( "GET" ,"https://app.smartfile.com/api/2/ping",
-    {params: {format:"json"},
+  Meteor.http.call( "GET" ,"https://app.smartfile.com/api/2/ping/",
+    {params: {format:"json-p"},
      headers: "Acces-Control-Allow-Origin: *", 
      timeout: 10000 },
     function(error, result) {
