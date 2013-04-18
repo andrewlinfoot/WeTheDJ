@@ -8,3 +8,6 @@ insecure
 preserve-inputs
 jquery
 http
+ejson
+accounts-base
+accounts-password
