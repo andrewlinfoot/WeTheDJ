@@ -1,7 +1,34 @@
 if (Meteor.isClient) {
   Songs = new Meteor.Collection("songs");
 
-  Template.hello.greeting = function () {
+  Session.setDefault('currentPage', 'homePage');
+
+  //Page Routing 
+  Template.renderPage.helpers({
+    homePage: function() {
+      if (Session.equals('currentPage', 'homePage')) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    signupPage: function() {
+      if (Session.equals('currentPage', 'signupPage')) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    loginPage: function() {
+      if (Session.equals('currentPage', 'loginPage')) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  });
+
+  Template.home.greeting = function () {
     if(Session.get('url')) {
       return Session.get('url');
     } else {
@@ -9,36 +36,42 @@ if (Meteor.isClient) {
     }
   };
 
-  Template.hello.events({
+  Template.home.events({
     'click input' : function () {
       // template data, if any, is available in 'this'
-      getExchangeURL("/wethedj/01 Action (3LAU Extended Edit).mp3");
+      Meteor.call('getSongList');
 
       if (typeof console !== 'undefined')
         console.log("You pressed the button");
     }
   });
 
-  //Get Exchange URLs and store them in the Songs collection
-  getExchangeURL = function(filePath) {
-    Meteor.call("SmartFile", "POST",
-      "/api/2/path/exchange/",
-      {auth: "2fm70a9TvdcItdhsQmwicn8THvnn61:mQnzKCvvAsILQDGmj20y6W1QSdNEkb",
-       params: {
-         path: filePath,
-         mode: "r",            //read only
-         expires: 60*60*24 }   //expires after 1 day     
-      },
-      function(error, results) {
-        console.log(results);
-        content = JSON.parse(results.content);
-        console.log(content);
-        Session.set('url',content.url);
+  Template.smartFileCredentials = function() {
+    return true;
+  };
 
-        //Meteor.call("insertSong", content);
-        Meteor.call("getSongList");
-    });
-  }
+
+
+  // //Get Exchange URLs and store them in the Songs collection
+  // getExchangeURL = function(filePath) {
+  //   Meteor.call("SmartFile", "POST",
+  //     "/api/2/path/exchange/",
+  //     {auth: "2fm70a9TvdcItdhsQmwicn8THvnn61:mQnzKCvvAsILQDGmj20y6W1QSdNEkb",
+  //      params: {
+  //        path: filePath,
+  //        mode: "r",            //read only
+  //        expires: 60*60*24 }   //expires after 1 day     
+  //     },
+  //     function(error, results) {
+  //       console.log(results);
+  //       content = JSON.parse(results.content);
+  //       console.log(content);
+  //       Session.set('url',content.url);
+
+  //       //Meteor.call("insertSong", content);
+  //       Meteor.call("getSongList");
+  //   });
+  // }
 }
 
 if (Meteor.isServer) {
@@ -53,13 +86,12 @@ if (Meteor.isServer) {
       this.unblock();
       return Meteor.http.call( method, "https://app.smartfile.com" + uri, options);
     },
-    insertSong: function(content) {
+    insertSong: function(exchangeURL) {
       //hack for passing the filePath
       //works because the exchange URLs have the file path appended to the end
-      var filePath = content.url.split("wethedj");
+      var filePath = exchangeURL.split("wethedj");
       filePath = "wethedj" + filePath[1];
       filePath = decodeURIComponent(filePath);
-      console.log(filePath);
 
       var results = Meteor.http.call("GET", "https://app.smartfile.com/api/2/path/info/"+filePath,
         { auth: "2fm70a9TvdcItdhsQmwicn8THvnn61:mQnzKCvvAsILQDGmj20y6W1QSdNEkb" });
@@ -69,7 +101,6 @@ if (Meteor.isServer) {
         attributes: data.attributes,
         exchangeURL: content.url
       };
-      console.log(songData);
       //Songs.insert(songData);
     },
     getSongList: function() {
@@ -77,8 +108,31 @@ if (Meteor.isServer) {
         { auth: "2fm70a9TvdcItdhsQmwicn8THvnn61:mQnzKCvvAsILQDGmj20y6W1QSdNEkb" });
       var data = results.data;
       var songArray = data.children;
-      console.log(songArray);
-      //songArray.forEach
+      //console.log(songArray);
+      for($i=0; $i<songArray.length; $i++) {
+        if ( songArray[$i].extension === '.mp3') {
+          var filePath = songArray[$i].url.split("wethedj");
+          filePath = "wethedj" + filePath[1];
+          filePath = decodeURIComponent(filePath);
+
+          Meteor.call('getExchangeURL', filePath );
+        }
+      }
+    },
+    //Get Exchange URLs and store them in the Songs collection
+    getExchangeURL: function(filePath) {
+      Meteor.call("SmartFile", "POST",
+        "/api/2/path/exchange/",
+        {auth: "2fm70a9TvdcItdhsQmwicn8THvnn61:mQnzKCvvAsILQDGmj20y6W1QSdNEkb",
+         params: {
+           path: filePath,
+           mode: "r",            //read only
+           expires: 60*60*24 }   //expires after 1 day     
+        },
+        function(error, results) {
+          content = JSON.parse(results.content);
+          Meteor.call("insertSong", content.url);
+      });
     }
   });
 }

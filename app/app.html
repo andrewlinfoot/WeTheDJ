@@ -1,16 +1,38 @@
 <head>
-  <title>app</title>
+  <title>WeTheDJ</title>
 </head>
 
 <body>
 	{{#if currentUser}}
-		{{>dashboard}}
+
+		{{#if smartFileCredentials}}
+			{{>dashboard}}
+		{{else}}
+			{{>addAPIcredentials}}
+		{{/if}}
+
 	{{else}}
-  	{{> hello}}
+
+		{{>renderPage}}
+
   {{/if}}
 </body>
 
-<template name="hello">
+<template name="renderPage">
+		{{#if homePage}}
+  		{{>home}}
+  	{{/if}}
+
+  	{{#if signupPage}}
+  		{{>signup}}
+  	{{/if}}
+
+  	{{#if loginPage}}
+  		{{>login}}
+  	{{/if}}
+</template>
+
+<template name="home">
   <h1>Hello World!</h1>
   <audio controls>
   	<source src="{{greeting}}" type="audio/mpeg">
@@ -19,6 +41,18 @@
   <input type="button" value="Click" />
 </template>
 
+<template name="signup">
+	signup
+</template>
+
+<template name="login">
+	login
+</template>
+
 <template name="dashboard">
-	
+	dashboard
+</template>
+
+<template name="addAPIcredentials">
+	add apicredentials
 </template>
