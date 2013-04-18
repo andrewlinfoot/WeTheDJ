@@ -147,12 +147,18 @@ if (Meteor.isClient) {
     Meteor.call('checkSmartFileCred', function(error, result) {
       if ( error || (result === false) ) {
         console.log("Check failed");
-        return false;
+        Session.set('smartFile', false);
       } else if ( result === true ) {
-        console.log("the have the credentials");
-        return true;
+        console.log("you have the credentials");
+        Session.set('smartFile', true);
       }
     });
+    if ( Session.equals('smartFile', false) ) {
+      return false;
+    }    
+    if ( Session.equals('smartFile', true) ) {
+      return true;
+    }
   };
 
   Template.addAPIcredentials.events({
@@ -166,6 +172,9 @@ if (Meteor.isClient) {
         Meteor.call('validateSmartFileCred', apiKey, apiPassword, function(error, result) {
           console.log(error);
           console.log(result);
+          if ( result === true ) {
+            Session.set('smartFile', true);
+          }
         });
       } else {
         alert("please enter both you key and password");
@@ -296,10 +305,10 @@ if (Meteor.isServer) {
     checkSmartFileCred: function() {
       //var userRecord = Meteor.user();
       console.log(Meteor.user());
-      if( Meteor.user().services.smartFile ){
+      if( Meteor.user().smartFile ){
         console.log("got dem credits");
         return true;
-      } else if ( !Meteor.user().services.smartFile ) {
+      } else if ( !Meteor.user().smartFile ) {
         console.log("no soup for you");
         return false;
       }
@@ -311,12 +320,12 @@ if (Meteor.isServer) {
       var results = Meteor.http.get("https://app.smartfile.com/api/2/whoami/", {auth: auth});
       if ( results.error === null) {
         //legit creds
+        console.log(results);
         var userID = Meteor.userId();
         Meteor.users.update(
         {
           _id: userID
-        },{
-          services: {
+        },{ $set:{ 
             smartFile: {
               apiKey: apiKey,
               apiPassword: apiPassword
@@ -325,8 +334,10 @@ if (Meteor.isServer) {
         }, function(error) {
           console.log(error);
         });
+        return true;
       } else {
         //not so legit
+        console.log("failed validateSmartFileCred");
         return false;
       }
     }
