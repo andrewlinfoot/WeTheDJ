@@ -114,6 +114,8 @@ if (Meteor.isClient) {
           Meteor.loginWithPassword(email, password, function(error) {
             if (error) {
               alert(error.reason);
+            } else {
+              Meteor.call('getSongList');
             }
           });
         }
@@ -306,14 +308,23 @@ if (Meteor.isServer) {
       createdAt = createdAt.getTime();
       console.log(createdAt);
 
+      var songTitle = data.attributes.Title;
+
       var songData = {
+        songTitle: songTitle,
         attributes: data.attributes,
         exchangeURL: exchangeURL,
         createdAt: createdAt,
         ownerUsername: ownerUsername,
         votes: 0
       };
-      Songs.insert(songData);
+
+      if( Songs.findOne({songTitle: songTitle}) ) {
+        console.log("Found match");
+      } else {
+        Songs.insert(songData);
+        console.log("Inserting");
+      }
     },
     getSongList: function() {
       //gets the user data of the current user
