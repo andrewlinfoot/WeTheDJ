@@ -147,6 +147,9 @@ if (Meteor.isClient) {
     Dashboard Code 
     Starts Here
   =============================================================== */
+  //initilize the audioElement variable
+  audioElement = document.createElement('audio');
+
   Template.renderDash.smartFileCredentials = function() {
     Meteor.call('checkSmartFileCred', function(error, result) {
       if ( error || (result === false) ) {
@@ -249,11 +252,11 @@ if (Meteor.isClient) {
       $(document).ready(function () {
         $('#shell img').plaxify()
         $.plax.enable()
-      })
+      });
+
   }
   Template.dashboard.rendered = function() {
     var nowPlaying = this.find('[data-songTitle]');
-    var song = this.find('audio');
     var songTitle = nowPlaying.getAttribute('data-songTitle');
 
     if( !Session.get('songTitle') ) {
@@ -263,9 +266,11 @@ if (Meteor.isClient) {
       nowPlaying.style.marginTop="0px";
 
       nowPlaying.setAttribute('data-topSong', true);
-      song.setAttribute('data-playing', true );
 
-      Meteor.setTimeout(function(){song.play()},100);
+      var player = document.getElementById('audioPlayer');
+      player.src = nowPlaying.getAttribute('data-audioURL');
+
+      Meteor.setTimeout(function(){player.play()},1000);
 
       Session.set('songTitle', songTitle);      
     } else if ( !Session.equals('songTitle', songTitle) ) {
@@ -273,32 +278,21 @@ if (Meteor.isClient) {
       //remove old songs attributes
       console.log("new top song");
       var oldSong = this.find('[data-topSong]');
-      var oldSongAudio = this.find('[data-playing]');
-
-      console.log("old song");
-      console.log(oldSong);
-      console.log(oldSongAudio);
-
-      console.log("new song");
-      console.log(nowPlaying);
-      console.log(song);
 
       oldSong.className="white-content price-content";
       oldSong.style.marginTop="";
 
       oldSong.removeAttribute('data-topSong');
-      oldSongAudio.removeAttribute('data-playing');
 
-      oldSongAudio.pause();
+      var player = document.getElementById('audioPlayer');
+      player.src = nowPlaying.getAttribute('data-audioURL');
+      player.play();
 
       //set new song as now playing
       nowPlaying.className="dark-content price-content";
       nowPlaying.style.marginTop="0px";
 
       nowPlaying.setAttribute('data-topSong', true);
-      song.setAttribute('data-playing', true );
-
-      Meteor.setTimeout(function(){song.play()},100);
 
       Session.set('songTitle', songTitle); 
 
@@ -308,9 +302,6 @@ if (Meteor.isClient) {
       nowPlaying.style.marginTop="0px";
 
       nowPlaying.setAttribute('data-topSong', true);
-      song.setAttribute('data-playing', true );
-
-      Meteor.setTimeout(function(){song.play()},100);
     }
 
   }

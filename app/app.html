@@ -89,6 +89,7 @@
 				</div>
 			</div>
 		</div><!--end: navbar -->
+		<audio id="audioPlayer"></audio>
 	</header>
 </template>
 
@@ -286,10 +287,7 @@
 		<div class="container">
 			<div class="row">
 				<div class="span3">
-					<div data-songTitle="{{songTitle}}" class="white-content price-content">
-						<audio>  
-							<source src="{{exchangeURL}}" type="audio/mpeg">
-						</audio>      
+					<div data-songTitle="{{songTitle}}" data-audioURL="{{exchangeURL}}" class="white-content price-content">   
 						<h4><i class="icon-user"></i>{{attributes.Artist}}</li>  
             <strong><i class="icon-music"></i>{{attributes.Title}}</li></strong>
             <hr>
