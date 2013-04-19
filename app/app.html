@@ -259,74 +259,48 @@
 	<div class="section-plan">
 
 			<div class="plan-pattern">
-
-				<div class="container">
-					<div class="row">
-						<div class="span12">							
-							<div class="plan-sign white-content">
-								<h2>Welcome, James.</h2>	
-							</div>						
-						</div>	
+				<!--Now Playing-->
+				<div class="pricing">
+					<div class="container">
+						<div class="row">
+							<div class="span3">
+								<div style="margin: 0px;" class="dark-content price-content">
+									<h3>Now Playing</h3> 
+									<hr>    
+								</div>	
+			        </div>	
+			      </div>
 					</div>
-				</div>
-			</div>	
-			<!--Song Entry-->
-			<div class="pricing">
-				<div class="container">
-					<div class="row">
-						<div class="span3">
-							<div class="dark-content price-content">
-								<h3>Now Playing</h3> 
-								<hr>         
-								<h4>
-									<i class="icon-user"></i>N.W.A</li>  
-	                <strong><i class="icon-music"></i>Gangsta Gangsta</li></strong>
-	                <i class="icon-folder-close"></i>Straight Outta Compton</li>
-	                <span><a class="btn btn-color" href="#">Upvote</a></i></span>
-	                <small><i class="icon-thumbs-up"></i>1106</li></small>
-	              </h4>
-							</div>	
-	          </div>	
-	        </div>
-				</div>
-	            <!--End Song Entry-->
-	            <!--Song Entry-->
-	            <div class="pricing">
-				<div class="container">
-					<div class="row">
-					<div class="span3">
-							<div class="white-content price-content">         
-								<h4><i class="icon-user"></i>Macklemore & Ryan Lewis</li>  
-	                            	<strong><i class="icon-music"></i>Thrift Shop</li></strong>
-	                                <i class="icon-folder-close"></i>The Heist</li>
-	                                <span><a class="btn btn-color" href="#">Upvote</a></i></span>
-	                                <small><i class="icon-thumbs-up"></i>988</li></small>
-	                            </h4>
-								</div>	
-	            </div>	
-	          </div>
-				</div>
-	      <!--End Song Entry--> 
-	    <!--Song Entry-->
-	    <div class="pricing">
-				<div class="container">
-					<div class="row">
-	                       <div class="span3">
-							<div class="white-content price-content">         
-								<h4><i class="icon-user"></i>Swedish House Mafia</li>  
-	                            	<strong><i class="icon-music"></i>Save The World</li></strong>
-	                                <i class="icon-folder-close"></i>Until One</li>
-	                                <span><a class="btn btn-color" href="#">Upvote</a></i></span>
-	                                <small><i class="icon-thumbs-up"></i>771</li></small>
-	                            </h4>
-								</div>	
-	            </div>	
-	          </div>
-				</div>
-	      <!--End Song Entry-->      
+				</div> 
+	      {{#each songs}}
+	      		{{>songDisplay}}
+	      {{/each}}
+
 			</div>
 			</div>
 	<!-- end: plan background -->
+</template>
+
+<template name="songDisplay">
+  <div class="pricing">
+		<div class="container">
+			<div class="row">
+				<div class="span3">
+					<div class="white-content price-content">
+						<audio id="audio">  
+							<source src="{{exchangeURL}}" type="audio/mpeg">
+						</audio>      
+						<h4><i class="icon-user"></i>{{attributes.Artist}}</li>  
+            <strong><i class="icon-music"></i>{{attributes.Title}}</li></strong>
+            <i class="icon-folder-close"></i>{{attributes.Albumn}}</li>
+            <span><a class="btn btn-color upvote" href="">Upvote</a></i></span>
+            <small><i class="icon-thumbs-up"></i>{{votes}}</li></small>
+            </h4>
+					</div>
+        </div>
+      </div>
+		</div>
+	</div>
 </template>
 
 <template name="addAPIcredentials">

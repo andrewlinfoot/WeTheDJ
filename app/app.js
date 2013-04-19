@@ -183,6 +183,18 @@ if (Meteor.isClient) {
     }
   });
 
+  Template.dashboard.songs = function() {
+    return Songs.find({},{sort: { votes: -1 }});
+  }
+
+  Template.songDisplay.events({
+    'click .upvote': function(e, t) {
+      e.preventDefault();  
+
+      Songs.update({_id: t.data._id},{$inc: {votes: 1}});
+    }
+  });
+
   /* ==============================================================
     Template UI Rendering Code 
     Starts Here
@@ -235,6 +247,19 @@ if (Meteor.isClient) {
         $.plax.enable()
       })
   }
+  Template.dashboard.rendered = function() {
+
+      nowPlaying = this.find('.white-content');
+      song = this.find('#audio');
+
+      nowPlaying.className="dark-content price-content";
+      nowPlaying.style.marginTop="0px";
+
+      Meteor.setTimeout(function(){song.play()},100);
+  }
+  Template.songDisplay.rendered = function() {
+    console.log("song display rendered");
+  }
 }
 
 /* ==============================================================
@@ -249,6 +274,10 @@ if (Meteor.isServer) {
 
   });
 
+  // Meteor.setInterval(function() {
+
+  // }, 60*60*24*1000);
+
   Meteor.methods({
     SmartFile: function(method, uri, options) {
       this.unblock();
@@ -261,26 +290,46 @@ if (Meteor.isServer) {
       filePath = "wethedj" + filePath[1];
       filePath = decodeURIComponent(filePath);
 
+      //gets the user data of the current user
+      var userData = Meteor.user();
+      var ownerUsername = userData.smartFile.ownerUsername;
+      var auth = userData.smartFile.apiKey + ":" + userData.smartFile.apiPassword;
+
+      //gets the attributes of the song
       var results = Meteor.http.call("GET", "https://app.smartfile.com/api/2/path/info/"+filePath,
-        { auth: "2fm70a9TvdcItdhsQmwicn8THvnn61:mQnzKCvvAsILQDGmj20y6W1QSdNEkb" });
+        { auth: auth });
       var data = results.data;
+
+      //sets the date that the song is entered into the DB
+      //this is used to remove songs that have expired exchange urls
+      var createdAt = new Date();
+      createdAt = createdAt.getTime();
+      console.log(createdAt);
 
       var songData = {
         attributes: data.attributes,
-        exchangeURL: content.url
+        exchangeURL: exchangeURL,
+        createdAt: createdAt,
+        ownerUsername: ownerUsername,
+        votes: 0
       };
-      //Songs.insert(songData);
+      Songs.insert(songData);
     },
     getSongList: function() {
+      //gets the user data of the current user
+      var userData = Meteor.user();
+      var ownerUsername = userData.smartFile.ownerUsername;
+      var auth = userData.smartFile.apiKey + ":" + userData.smartFile.apiPassword;
+
       var results = Meteor.http.get("https://app.smartfile.com/api/2/path/info/wethedj?children=on",
-        { auth: "2fm70a9TvdcItdhsQmwicn8THvnn61:mQnzKCvvAsILQDGmj20y6W1QSdNEkb" });
+        { auth: auth });
       var data = results.data;
       var songArray = data.children;
       //console.log(songArray);
       for($i=0; $i<songArray.length; $i++) {
         if ( songArray[$i].extension === '.mp3') {
           var filePath = songArray[$i].url.split("wethedj");
-          filePath = "wethedj" + filePath[1];
+          filePath = "/wethedj" + filePath[1];
           filePath = decodeURIComponent(filePath);
 
           Meteor.call('getExchangeURL', filePath );
@@ -289,22 +338,29 @@ if (Meteor.isServer) {
     },
     //Get Exchange URLs and store them in the Songs collection
     getExchangeURL: function(filePath) {
+      //gets the user data of the current user
+      var userData = Meteor.user();
+      var ownerUsername = userData.smartFile.ownerUsername;
+      var auth = userData.smartFile.apiKey + ":" + userData.smartFile.apiPassword;
+
+      console.log(filePath);
+
       Meteor.call("SmartFile", "POST",
         "/api/2/path/exchange/",
-        {auth: "2fm70a9TvdcItdhsQmwicn8THvnn61:mQnzKCvvAsILQDGmj20y6W1QSdNEkb",
+        {auth: auth,
          params: {
            path: filePath,
            mode: "r",            //read only
            expires: 60*60*24 }   //expires after 1 day     
         },
         function(error, results) {
+          console.log(error);
           content = JSON.parse(results.content);
           Meteor.call("insertSong", content.url);
       });
     },
+    //checks to see if the user has entered their smartfile credentials yet
     checkSmartFileCred: function() {
-      //var userRecord = Meteor.user();
-      console.log(Meteor.user());
       if( Meteor.user().smartFile ){
         console.log("got dem credits");
         return true;
@@ -314,13 +370,20 @@ if (Meteor.isServer) {
       }
     },
     //validates smartFile credentials and if valid, adds them to the users account
+    //also adds the ownerUsername value which sorts users by account
     validateSmartFileCred: function(apiKey, apiPassword) {
       auth = apiKey + ":" + apiPassword;
       //2fm70a9TvdcItdhsQmwicn8THvnn61:mQnzKCvvAsILQDGmj20y6W1QSdNEkb
       var results = Meteor.http.get("https://app.smartfile.com/api/2/whoami/", {auth: auth});
       if ( results.error === null) {
         //legit creds
-        console.log(results);
+        var data = results.data;
+        if (data.user.owner === null) {
+          var ownerUsername = data.user.username;
+        } else {
+          var ownerUsername = data.user.owner.username;
+        }
+
         var userID = Meteor.userId();
         Meteor.users.update(
         {
@@ -328,7 +391,8 @@ if (Meteor.isServer) {
         },{ $set:{ 
             smartFile: {
               apiKey: apiKey,
-              apiPassword: apiPassword
+              apiPassword: apiPassword,
+              ownerUsername: ownerUsername
             }
           }
         }, function(error) {
