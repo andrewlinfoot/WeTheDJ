@@ -1,4 +1,6 @@
 if (Meteor.isClient) {
+  Songs = Meteor.subscribe("songs");
+
   Songs = new Meteor.Collection("songs");
 
   /* ==============================================================
@@ -325,13 +327,16 @@ if (Meteor.isClient) {
 if (Meteor.isServer) {
   Meteor.startup(function () {
     // code to run on server at startup
-
+    Songs = new Meteor.Collection('songs');
 
   });
 
   // Meteor.setInterval(function() {
 
   // }, 60*60*24*1000);
+  Meteor.publish("songs", function() {
+    return Songs.find();
+  });
 
   Meteor.methods({
     SmartFile: function(method, uri, options) {
