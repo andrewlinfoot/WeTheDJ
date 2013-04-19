@@ -34,6 +34,7 @@
 /* includes sprites.less reset */
 [class^="icon-"],
 [class*=" icon-"] {
+  padding-right: .3em;
   font-family: FontAwesome;
   font-weight: normal;
   font-style: normal;

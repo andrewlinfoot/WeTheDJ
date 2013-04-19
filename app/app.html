@@ -286,13 +286,13 @@
 		<div class="container">
 			<div class="row">
 				<div class="span3">
-					<div class="white-content price-content">
-						<audio id="audio">  
+					<div data-songTitle="{{songTitle}}" class="white-content price-content">
+						<audio>  
 							<source src="{{exchangeURL}}" type="audio/mpeg">
 						</audio>      
 						<h4><i class="icon-user"></i>{{attributes.Artist}}</li>  
             <strong><i class="icon-music"></i>{{attributes.Title}}</li></strong>
-            <i class="icon-folder-close"></i>{{attributes.Albumn}}</li>
+            <hr>
             <span><a class="btn btn-color upvote" href="">Upvote</a></i></span>
             <small><i class="icon-thumbs-up"></i>{{votes}}</li></small>
             </h4>
