@@ -317,9 +317,11 @@ if (Meteor.isClient) {
 =============================================================== */
 
 if (Meteor.isServer) {
+  Songs = new Meteor.Collection('songs');
+
   Meteor.startup(function () {
     // code to run on server at startup
-    Songs = new Meteor.Collection('songs');
+
 
   });
 
