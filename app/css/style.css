@@ -959,7 +959,14 @@ box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3) inset;
     border: 1px solid #E4E4E4;
 	width: 1150px;
 
+    width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
+
+
+
 .pricing .most-popular{
     margin-top: 0px;
 }
@@ -1006,6 +1013,7 @@ box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3) inset;
     padding: 10px;
     text-shadow: none !important;
 }
+
 .dark-content hr{
     -moz-border-bottom-colors: none;
     -moz-border-left-colors: none;
