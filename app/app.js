@@ -58,6 +58,7 @@ if (Meteor.isClient) {
           alert('error');
         } else {
           window.scrollTo(0,0);
+          Session.set('songTitle', '');
           Session.set('currentPage', 'homePage');
         }
       });
