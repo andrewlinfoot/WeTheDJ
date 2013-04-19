@@ -325,8 +325,6 @@ if (Meteor.isClient) {
 if (Meteor.isServer) {
   Meteor.startup(function () {
     // code to run on server at startup
-    Songs = new Meteor.Collection("songs");
-
 
 
   });
@@ -422,7 +420,7 @@ if (Meteor.isServer) {
          params: {
            path: filePath,
            mode: "r",            //read only
-           expires: 60*60*24 }   //expires after 1 day     
+           expires: 60*60*24*10 }   //expires after 10 days     
         },
         function(error, results) {
           console.log(error);
