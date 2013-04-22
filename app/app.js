@@ -62,6 +62,9 @@ if (Meteor.isClient) {
           Session.set('currentPage', 'homePage');
         }
       });
+    },
+    'click #testbutton': function(e,t) {
+      Meteor.call('getSongList');
     }
   });
 
@@ -134,6 +137,57 @@ if (Meteor.isClient) {
     return pattern.test(email);
   };
 
+  //Parse query strings
+  deparam = function (querystring) {
+    // remove any preceding url and split
+    querystring = querystring.substring(querystring.indexOf('?')+1).split('&');
+    var params = {}, pair, d = decodeURIComponent;
+    // march and parse
+    for (var i = querystring.length - 1; i >= 0; i--) {
+      pair = querystring[i].split('=');
+      params[d(pair[0])] = d(pair[1]);
+    }
+
+    return params;
+  };//--  fn  deparam
+
+  //get the GET parameters
+  var getParams = deparam( window.location.search.replace( "?", "" ) );
+  console.log(getParams);
+  if ( getParams.verifier && window.opener ) {
+    window.opener.callAuthorize( getParams.verifier );
+    window.close();
+  }
+  //funtion to call authorize
+  callAuthorize = function( oauth_verifier ) {
+    console.log("running the oauth calls");
+
+    var oauth_token = Session.get('oauth_token');
+    var oauth_token_secret = Session.get('oauth_token_secret');
+
+    Meteor.call('smartfileOAuthAccess', oauth_verifier, oauth_token, oauth_token_secret, function( error, results ) {
+      console.log(error);
+      console.log(results);
+
+      var oauthResponse = deparam(results.content);
+      console.log(oauthResponse);
+
+      var oauth_token = oauthResponse.oauth_token;
+      var oauth_token_secret = oauthResponse.oauth_token_secret;
+
+      Meteor.call('addOAuth' , oauth_token , oauth_token_secret, function( error, results) {
+        console.log(error);
+        console.log(results);
+        if (results === true) {
+          location.reload();
+        } else {
+          location.reload();
+        }
+
+      });
+    });
+  }
+
   Template.home.events({
     'click input' : function () {
       // template data, if any, is available in 'this'
@@ -170,23 +224,26 @@ if (Meteor.isClient) {
   };
 
   Template.addAPIcredentials.events({
-    'submit #submitAPIcredentials, click #submitAPIcredentials': function(e, t) {
-      e.preventDefault();
+    'click #loginWithSmartfile': function(e, t) {
 
-      var apiKey = t.find('#apiKey').value
-        , apiPassword = t.find('#apiPassword').value;
+      Meteor.call('smartfileOAuth', function (error, results) {
+        console.log(error);
+        console.log(results);
+        console.log(results.content);
 
-      if( apiKey && apiPassword ) {
-        Meteor.call('validateSmartFileCred', apiKey, apiPassword, function(error, result) {
-          console.log(error);
-          console.log(result);
-          if ( result === true ) {
-            Session.set('smartFile', true);
-          }
-        });
-      } else {
-        alert("please enter both you key and password");
-      }
+        var oauthResponse = deparam(results.content);
+        console.log(oauthResponse);
+
+        var oauth_token = oauthResponse.oauth_token;
+        var oauth_token_secret = oauthResponse.oauth_token_secret;
+
+        Session.set('oauth_token', oauth_token);
+        Session.set('oauth_token_secret', oauth_token_secret);
+
+        //window.location = 'https://app.smartfile.com/oauth/authorize/?oauth_token='+oauth_token+'&oauth_callback=http%3A%2F%2Flocalhost%3A3000?oauth_token='+oauth_token;
+        window.open('https://app.smartfile.com/oauth/authorize/?oauth_token='+oauth_token+'&oauth_callback=http%3A%2F%2Flocalhost%3A3000');
+
+      });
 
     }
   });
@@ -385,18 +442,16 @@ if (Meteor.isServer) {
     },
     getSongList: function() {
       //gets the user data of the current user
-      var userData = Meteor.user();
-      var ownerUsername = userData.smartFile.ownerUsername;
-      var auth = userData.smartFile.apiKey + ":" + userData.smartFile.apiPassword;
+      var params = getOAuthParams();
 
-      var results = Meteor.http.get("https://app.smartfile.com/api/2/path/info/wethedj?children=on",
-        { auth: auth });
+      var results = Meteor.http.get("https://app.smartfile.com/api/2/path/info/wethedj/?children=on", {params: params});
+
       var data = results.data;
       var songArray = data.children;
-      //console.log(songArray);
-      for($i=0; $i<songArray.length; $i++) {
-        if ( songArray[$i].extension === '.mp3') {
-          var filePath = songArray[$i].url.split("wethedj");
+
+      for( var i=0; i < songArray.length; i++) {
+        if ( songArray[i].extension === 'mp3') {
+          var filePath = songArray[i].url.split("wethedj");
           filePath = "/wethedj" + filePath[1];
           filePath = decodeURIComponent(filePath);
 
@@ -407,25 +462,27 @@ if (Meteor.isServer) {
     //Get Exchange URLs and store them in the Songs collection
     getExchangeURL: function(filePath) {
       //gets the user data of the current user
-      var userData = Meteor.user();
-      var ownerUsername = userData.smartFile.ownerUsername;
-      var auth = userData.smartFile.apiKey + ":" + userData.smartFile.apiPassword;
+      var params = getOAuthParams();
+
+      params.path = filePath;
+      params.mode = "r";            //read only
+      params.expires = 60*60*24*10; //expires after 10 days  
 
       console.log(filePath);
 
-      Meteor.call("SmartFile", "POST",
-        "/api/2/path/exchange/",
-        {auth: auth,
-         params: {
-           path: filePath,
-           mode: "r",            //read only
-           expires: 60*60*24*10 }   //expires after 10 days     
-        },
-        function(error, results) {
-          console.log(error);
-          content = JSON.parse(results.content);
-          Meteor.call("insertSong", content.url);
-      });
+      console.log(params);
+
+      var results = Meteor.http.post('https://app.smartfile.com/api/2/path/exchange/', {params: params} );
+      console.log(results);
+
+      // Meteor.call("SmartFile", "POST",
+      //   "/api/2/path/exchange/",
+      //   { params: params},
+      //   function(error, results) {
+      //     console.log(error);
+      //     content = JSON.parse(results.content);
+      //     Meteor.call("insertSong", content.url);
+      // });
     },
     //checks to see if the user has entered their smartfile credentials yet
     checkSmartFileCred: function() {
@@ -437,41 +494,82 @@ if (Meteor.isServer) {
         return false;
       }
     },
-    //validates smartFile credentials and if valid, adds them to the users account
-    //also adds the ownerUsername value which sorts users by account
-    validateSmartFileCred: function(apiKey, apiPassword) {
-      auth = apiKey + ":" + apiPassword;
-      //2fm70a9TvdcItdhsQmwicn8THvnn61:mQnzKCvvAsILQDGmj20y6W1QSdNEkb
-      var results = Meteor.http.get("https://app.smartfile.com/api/2/whoami/", {auth: auth});
-      if ( results.error === null) {
-        //legit creds
-        var data = results.data;
-        if (data.user.owner === null) {
-          var ownerUsername = data.user.username;
-        } else {
-          var ownerUsername = data.user.owner.username;
-        }
+    //successfully returns request_token
+    smartfileOAuth: function() {
+      var timestamp = new Date();
+      timestamp = Math.floor(timestamp.getTime() / 1000);
 
+      var nonce = Math.floor(Math.random()*1000000000000);
+
+      var params = {
+        oauth_consumer_key: "m0smtXzYZ9CRCWNrHywf0a7gts8EkE",
+        oauth_signature_method: "PLAINTEXT",
+        oauth_signature: "UgZltyLchvQdenDYHhzlFwipdLbE5F%26",
+        oauth_timestamp: timestamp,
+        oauth_nonce: nonce,
+        oauth_version: 1.0,
+        oauth_callback: "http://localhost:3000"
+      };
+      console.log(params);
+      return Meteor.http.get("https://app.smartfile.com/oauth/request_token/", {params: params});
+    },
+    smartfileOAuthAccess: function( oauth_verifier, oauth_token, oauth_token_secret ) {
+      var timestamp = new Date();
+      timestamp = Math.floor(timestamp.getTime() / 1000);
+
+      var nonce = Math.floor(Math.random()*1000000000000);
+
+      var params = {
+        oauth_consumer_key: "m0smtXzYZ9CRCWNrHywf0a7gts8EkE",
+        oauth_signature_method: "PLAINTEXT",
+        oauth_signature: "UgZltyLchvQdenDYHhzlFwipdLbE5F%26"+oauth_token_secret,
+        oauth_timestamp: timestamp,
+        oauth_nonce: nonce,
+        oauth_version: 1.0,
+        oauth_token: oauth_token,
+        oauth_verifier: oauth_verifier
+      };
+      console.log(params);
+      return Meteor.http.get("https://app.smartfile.com/oauth/access_token/", {params: params});
+    },
+    addOAuth: function( oauth_token, oauth_token_secret ) {
         var userID = Meteor.userId();
         Meteor.users.update(
         {
           _id: userID
         },{ $set:{ 
             smartFile: {
-              apiKey: apiKey,
-              apiPassword: apiPassword,
-              ownerUsername: ownerUsername
+              oauth_token: oauth_token,
+              oauth_token_secret: oauth_token_secret
             }
           }
         }, function(error) {
           console.log(error);
-        });
+        });      
         return true;
-      } else {
-        //not so legit
-        console.log("failed validateSmartFileCred");
-        return false;
-      }
     }
   });
+
+  //function to get OAuth parameters for a given user
+  getOAuthParams = function() {
+      var userData = Meteor.user();
+      var oauth_token = userData.smartFile.oauth_token;
+      var oauth_token_secret = userData.smartFile.oauth_token_secret;
+      var timestamp = new Date();
+      timestamp = Math.floor(timestamp.getTime() / 1000);
+
+      var nonce = Math.floor(Math.random()*1000000000000);
+
+      var params = {
+        oauth_consumer_key: "m0smtXzYZ9CRCWNrHywf0a7gts8EkE",
+        oauth_signature_method: "PLAINTEXT",
+        oauth_signature: "UgZltyLchvQdenDYHhzlFwipdLbE5F%26"+oauth_token_secret,
+        oauth_timestamp: timestamp,
+        oauth_nonce: nonce,
+        oauth_version: 1.0,
+        oauth_token: oauth_token,
+      };
+
+      return params;
+  }
 }

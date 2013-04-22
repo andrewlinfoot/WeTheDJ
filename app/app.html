@@ -77,6 +77,7 @@
 
 					<div id="top-navigation" class="nav-collapse subnav-collapse collapse ">
 						<ul class="nav pull-right">
+							<button id="testbutton">TEST</button>
 							{{#if currentUser}}
                 <li class="top-account visible-desktop"><a id="_logout" class="top-sign-in" href="">Logout</a></li>
 							{{else}}
@@ -302,32 +303,9 @@
 </template>
 
 <template name="addAPIcredentials">
-<div class="plan-pattern">
-
-			<div class="container">
-				<div class="row">
-					<div class="span12">
-					<div class="plan-sign white-content">
-							<h4><strong>Please follow the Instructions below to complete the authentication process </strong></h4>	
-							
-							
-						</div>								
-						<div class="plan-sign white-content">
-							<h4><strong>Please note: This process is only temporary as we are working to complete our authentication process </strong></h4>	
-							
-							
-						</div>						
-					</div>	
-				</div>
-			</div>
-
-		</div>	
-
-
-<!-- start: sign-pattern -->
-<div class="section-sign sign-pattern">
+<!-- start: sign -->
+<div class="section-sign">
 	<div class="section-wrapper">
-
 		<div class="container">
 			<div class="row">
 				<div class="span6 offset3">
@@ -335,50 +313,23 @@
 						<div class="">
 							<div class="lines">
 								<div>
-								<h2 class="lines-title">To enable our app to access your SmartFile Folder, please go to this <a href="https://app.smartfile.com/api/authorize/">Link</a></h2>
-
+								<h2 class="lines-title">Login with SmartFile</h2>
 								</div>
 							</div>
-</br>
-							<div class="lines">
-								<div>
-								<h2 class="lines-title">If you aren't logged in, you'll see this <a href="https://app.smartfile.com/api/authorize/">Page</a></h2>
-								<img src="/images/sc1.PNG">
-								</div>
-
-							</div>
-							<div class="lines">
-								<div>
-								<h2 class="lines-title">Login with your smartfile account and You'll be taken to the page shown below. When you're on this page, click the 'generate API key button</h2>
-								<img src="/images/sc2.PNG">
-								</div>
-							</div>
-							<div class="lines">
-								<div>
-								<h2 class="lines-title">Once an API Key and Password is generated for you as shown below copy and enter both values into fields at the bottom of our page and click the 'add credentials' button. Then proceed to enjoy the music!</h2>
-								<img src="/images/sc3.PNG">
-								</div>
-							</div>'
 						</div>
 					</div>		
 				</div>	
 			</div>
 		</div>	
-
-<!-- start: sign-pattern -->
-<div class="section-sign sign-pattern">
-	<div class="section-wrapper">
 		<div class="container">
 			<div class="row">
-				<div class="span6 offset3">
-					<form id="open-id-c">
-						<input id="apiKey" type="text" class="open-email" placeholder="Key">
-			      <input id="apiPassword" type="password" class="open-password" placeholder="Password">
-			      <input id="submitAPIcredentials" type="submit" class="btn btn-send btn-sign " value="Add Credentials">
-					</form>	
-				</div>	
+					<div class="span12 openid">
+						
+						<button class="modern sign-twitter " id="loginWithSmartfile"><span class="mordern-id">SmartFile</span></button>
+						
+					</div>	
 			</div>
-		</div>	
+		</div>
 	</div>			
  </div><!-- end: sign -->
 </template>
