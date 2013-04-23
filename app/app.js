@@ -325,8 +325,7 @@ if (Meteor.isClient) {
     var player = document.getElementById('audioPlayer');
 
     if( !Session.get('songTitle') ) {
-      console.log("first initialization");
-
+      //first initialization
       nowPlaying.className="dark-content price-content";
       nowPlaying.style.marginTop="0px";
 
@@ -340,7 +339,6 @@ if (Meteor.isClient) {
     } else if ( nowPlaying !== topSong ) {
       //new top song
       //remove old songs attributes
-      console.log("new top song");
       var oldSong = nowPlaying;
 
       oldSong.className="white-content price-content";
@@ -360,7 +358,7 @@ if (Meteor.isClient) {
       Session.set('songTitle', songTitle); 
 
     } else if ( nowPlaying === topSong ) {
-      console.log('rerender, same song on top');
+      //same song on top reapply css changes
       nowPlaying.className="dark-content price-content";
       nowPlaying.style.marginTop="0px";
 
@@ -384,7 +382,6 @@ if (Meteor.isServer) {
 
   Meteor.startup(function () {
     // code to run on server at startup
-
 
   });
 
