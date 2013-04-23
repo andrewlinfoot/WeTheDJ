@@ -38,8 +38,14 @@ a:focus {
     outline-offset: 0px;
     color: #EB4938;
 }
-h1, h2, h3, h4, h5, h6 {
+h1{
+    font-weight: 200px;
+    text-align: center;
+}
+
+ h2, h3, h4, h5, h6 {
     font-weight: 300;
+
 }
 article, aside, details, figcaption, figure, footer, header, hgroup, nav, section {
     display: block;
@@ -47,9 +53,11 @@ article, aside, details, figcaption, figure, footer, header, hgroup, nav, sectio
 
 .deco img{
     border: 0 none;
-    height: 350px;
+    height: 230px;
     max-width: 100%;
-	padding-left: 120px;
+    margin-top: 30px;
+    padding-left: 180px;
+    padding-top: 30px;
     vertical-align: middle;
 }
 
