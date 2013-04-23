@@ -180,6 +180,7 @@ if (Meteor.isClient) {
         console.log(error);
         console.log(results);
         if (results === true) {
+          Meteor.call('getSongList');
           location.reload();
         } else {
           location.reload();
@@ -240,7 +241,7 @@ if (Meteor.isClient) {
         Session.set('oauth_token_secret', oauth_token_secret);
 
         //window.location = 'https://app.smartfile.com/oauth/authorize/?oauth_token='+oauth_token+'&oauth_callback=http%3A%2F%2Flocalhost%3A3000?oauth_token='+oauth_token;
-        window.open('https://app.smartfile.com/oauth/authorize/?oauth_token='+oauth_token+'&oauth_callback=http%3A%2F%2Flocalhost%3A3000');
+        window.open('https://app.smartfile.com/oauth/authorize/?oauth_token='+oauth_token);
 
       });
 
@@ -482,7 +483,10 @@ if (Meteor.isServer) {
         list: "on"
       };
       //hardcoded api keys for alinfoot9
-      var auth = "7bbGRLbWoKYO1zqr9F2VQVFuhwQoBq:1CsQ8aD9CI0XJjngmUD5I5Y1CUEXJx";
+      //var auth = "7bbGRLbWoKYO1zqr9F2VQVFuhwQoBq:1CsQ8aD9CI0XJjngmUD5I5Y1CUEXJx";
+      //hardcoded api keys for adeyo
+      var auth = "ZRF0InDjvQoLEPZq7lvgkMyiKhcqiO:Qc0BR5bggysxbkIAZZAoMJKvPv84hV";
+
       var results = Meteor.http.post('https://app.smartfile.com/api/2/link/', {params: params, auth: auth});
 
       var href = results.data.href;
@@ -521,7 +525,7 @@ if (Meteor.isServer) {
         oauth_timestamp: timestamp,
         oauth_nonce: nonce,
         oauth_version: 1.0,
-        oauth_callback: "http://localhost:3000"
+        oauth_callback: "http://wethedj.org"
       };
       console.log(params);
       return Meteor.http.get("https://app.smartfile.com/oauth/request_token/", {params: params});
