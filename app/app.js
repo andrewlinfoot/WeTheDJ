@@ -313,7 +313,14 @@ if (Meteor.isClient) {
 
   }
   Template.dashboard.rendered = function() {
-    var nowPlaying = this.find('[data-songTitle]');
+
+    if ( this.find('[data-nowPlaying]') ) {
+      var nowPlaying = this.find('[data-nowPlaying]');      
+    } else {
+      var nowPlaying = this.find('[data-songTitle]');
+    }
+    var topSong = this.find('[data-songTitle]');
+
     var songTitle = nowPlaying.getAttribute('data-songTitle');
     var player = document.getElementById('audioPlayer');
 
@@ -323,42 +330,42 @@ if (Meteor.isClient) {
       nowPlaying.className="dark-content price-content";
       nowPlaying.style.marginTop="0px";
 
-      nowPlaying.setAttribute('data-topSong', true);
+      nowPlaying.setAttribute('data-nowPlaying', true);
 
       player.src = nowPlaying.getAttribute('data-audioURL');
 
       Meteor.setTimeout(function(){player.play()},1000);
 
       Session.set('songTitle', songTitle);      
-    } else if ( !Session.equals('songTitle', songTitle) ) {
-        //new top song
-        //remove old songs attributes
-        console.log("new top song");
-        var oldSong = this.find('[data-topSong]');
+    } else if ( nowPlaying !== topSong ) {
+      //new top song
+      //remove old songs attributes
+      console.log("new top song");
+      var oldSong = nowPlaying;
 
-        oldSong.className="white-content price-content";
-        oldSong.style.marginTop="";
+      oldSong.className="white-content price-content";
+      oldSong.style.marginTop="";
 
-        oldSong.removeAttribute('data-topSong');
+      oldSong.removeAttribute('data-nowPlaying');
 
-        player.src = nowPlaying.getAttribute('data-audioURL');
-        player.play();
+      player.src = topSong.getAttribute('data-audioURL');
+      player.play();
 
-        //set new song as now playing
-        nowPlaying.className="dark-content price-content";
-        nowPlaying.style.marginTop="0px";
+      //set new song as now playing
+      topSong.className="dark-content price-content";
+      topSong.style.marginTop="0px";
 
-        nowPlaying.setAttribute('data-topSong', true);
+      topSong.setAttribute('data-nowPlaying', true);
 
-        Session.set('songTitle', songTitle); 
+      Session.set('songTitle', songTitle); 
 
-      } else if ( Session.equals('songTitle', songTitle)) {
-        console.log('rerender, same song on top');
-        nowPlaying.className="dark-content price-content";
-        nowPlaying.style.marginTop="0px";
+    } else if ( nowPlaying === topSong ) {
+      console.log('rerender, same song on top');
+      nowPlaying.className="dark-content price-content";
+      nowPlaying.style.marginTop="0px";
 
-        nowPlaying.setAttribute('data-topSong', true);
-      }
+      nowPlaying.setAttribute('data-nowPlaying', true);
+    }      
 
   }
   Template.songDisplay.rendered = function() {
