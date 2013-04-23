@@ -483,11 +483,13 @@ if (Meteor.isServer) {
         list: "on"
       };
       //hardcoded api keys for alinfoot9
-      //var auth = "7bbGRLbWoKYO1zqr9F2VQVFuhwQoBq:1CsQ8aD9CI0XJjngmUD5I5Y1CUEXJx";
+      //var auth = "O7KkFE0S5X2j89lWIy21aAZoAwr3mP:GBTvJUhhJv5KopattTGXSb6iuGbe2p";
       //hardcoded api keys for adeyo
       var auth = "ZRF0InDjvQoLEPZq7lvgkMyiKhcqiO:Qc0BR5bggysxbkIAZZAoMJKvPv84hV";
 
       var results = Meteor.http.post('https://app.smartfile.com/api/2/link/', {params: params, auth: auth});
+
+      console.log(results);
 
       var href = results.data.href;
       var fileName = results.data.path;
