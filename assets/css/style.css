@@ -959,6 +959,10 @@ box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3) inset;
     border-radius: 3px;
     border: 1px solid #E4E4E4;
 	width: 1150px;
+    -webkit-transition:opacity 0.25s linear 0s;
+     -moz-transition:opacity 0.25s linear 0s;
+       -o-transition:opacity 0.25s linear 0s;
+          transition:opacity 0.25s linear 0s;
 
 }
 .pricing .most-popular{
@@ -985,7 +989,7 @@ box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3) inset;
 
 .pricing .price-content h4 i{
 
-	padding-left: 50px;
+	padding-left: 5px;
 }
 
 .pricing .price-content h4 span{
@@ -1006,6 +1010,11 @@ box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3) inset;
     margin-bottom: 0px;
     padding: 10px;
     text-shadow: none !important;
+    -webkit-transition:opacity 0.25s linear 0s;
+     -moz-transition:opacity 0.25s linear 0s;
+       -o-transition:opacity 0.25s linear 0s;
+          transition:opacity 0.25s linear 0s;
+    
 }
 .dark-content hr{
     -moz-border-bottom-colors: none;
@@ -1019,6 +1028,14 @@ box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3) inset;
     border-width: 1px 0;
     border-color: #191919;
     box-shadow: none;
+}
+
+.pricing .price-content:hover{
+
+
+          -khtml-opacity: 0.0;
+  -moz-opacity: 0.0;
+  opacity: 0.0;
 }
 
 hr {
