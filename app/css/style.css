@@ -958,7 +958,10 @@ box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3) inset;
     border-radius: 3px;
     border: 1px solid #E4E4E4;
 	width: 1150px;
-
+    -webkit-transition:opacity 0.25s linear 0s;
+     -moz-transition:opacity 0.25s linear 0s;
+       -o-transition:opacity 0.25s linear 0s;
+          transition:opacity 0.25s linear 0s;
     
 }
 
@@ -988,7 +991,7 @@ box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3) inset;
 
 .pricing .price-content h4 a li{
 
-	padding-left: 5px;
+	padding-left: 50px;
 }
 
 
@@ -1011,9 +1014,19 @@ box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3) inset;
     margin-bottom: 0px;
     padding: 10px;
     text-shadow: none !important;
+        -webkit-transition:opacity 0.25s linear 0s;
+     -moz-transition:opacity 0.25s linear 0s;
+       -o-transition:opacity 0.25s linear 0s;
+          transition:opacity 0.25s linear 0s;
 }
 
+.loading{
 
+
+          -khtml-opacity: 0.0;
+  -moz-opacity: 0.0;
+  opacity: 0.0;
+}
 
 
 .dark-content hr{

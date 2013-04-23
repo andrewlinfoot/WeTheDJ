@@ -257,6 +257,12 @@ if (Meteor.isClient) {
 
       Songs.update({_id: t.data._id},{$inc: {votes: 1}});
     }
+    // ,
+    // 'click .downvote': function(e, t) {
+    //   e.preventDefault();    
+      
+    //   Songs.update({_id: t.data._id},{$inc: {votes: -1}});         
+    // }
   });
 
   /* ==============================================================
@@ -368,7 +374,6 @@ if (Meteor.isClient) {
   }
   Template.songDisplay.rendered = function() {
 
-    console.log("song display rendered");
   }
 }
 
